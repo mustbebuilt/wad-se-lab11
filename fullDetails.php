@@ -1,21 +1,23 @@
 <?php 
-ini_set('display_errors', 1);
-require_once('../../includes/conn.inc.php'); 
-$stmt = $mysqli->prepare("SELECT filmID, filmName, filmDescription, filmImage, filmPrice, userRating FROM movies WHERE filmID = ?");
-$stmt->bind_param('i', $_GET['filmID']);
-$stmt->execute(); 
-$stmt->bind_result($filmID, $filmName, $filmDescription, $filmImage, $filmPrice, $userRating);
-$stmt->fetch();
-$stmt->close();
-$ratingAr = json_decode($userRating, true);
+//ini_set('display_errors', 1);
+require('includes/conn.inc.php'); 
+require('includes/functions.inc.php'); 
+$sFilmID = safeInt($_GET['filmID']);
+$stmt = $pdo->prepare("SELECT * FROM movies WHERE filmID = :filmID");
+$stmt->bindParam(':filmID', $sFilmID, PDO::PARAM_INT);
+$stmt->execute();
+$row = $stmt->fetchObject();
+$ratingAr = json_decode($row->userRating, true);
 $userRatingAvg = round($ratingAr['Score']/$ratingAr['Reviews'], 2);
 ?>
 <!DOCTYPE HTML>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title><?php echo $filmName; ?></title>
-<link href="css/main.css" rel="stylesheet" type="text/css">
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=1.0,initial-scale=1">
+<title><?php echo $row->filmName; ?></title>
+<link href="css/mobileFirst.css" rel="stylesheet" type="text/css">
+<link href="css/desktop.css" media="only screen and (min-width:601px)" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="container">
@@ -25,51 +27,51 @@ $userRatingAvg = round($ratingAr['Score']/$ratingAr['Reviews'], 2);
 <nav>
 <ul>
 <li><a href="index.php">Database List</a></li>
-<li><a href="sheffield-listing">What's On</a></li>
+<li><a href="sheffield-listing.php">What's On</a></li>
 </ul>
 </nav>
 </header>
 
 <section>
-<div class="leftBox">
+<div>
 <?php
-	echo "<h2>{$filmName}</h2>";
+	echo "<h2>{$row->filmName}</h2>";
 	echo "<p>Average User Rating: <span class=\"currentRating\">{$userRatingAvg}</span></p>";
 ?>
 	
     <form>
-    <input type="hidden" name="filmID" value="<?php echo $filmID;?>">
+    <input type="hidden" name="filmID" value="<?php echo $row->filmID;?>">
     <label>Rate this film</label>
     <p>
-  	    <label>0<input type="radio" name="filmReview" value="0" id="filmReview_0" <?php echo ($filmReview == 0) ? 'checked="checked"' : ''; ?>></label>
-  	    <label>1<input type="radio" name="filmReview" value="1" id="filmReview_1" <?php echo ($filmReview == 1) ? 'checked="checked"' : ''; ?>></label>
-  	    <label>2<input type="radio" name="filmReview" value="2" id="filmReview_2" <?php echo ($filmReview == 2) ? 'checked="checked"' : ''; ?>></label>
-  	    <label>3<input type="radio" name="filmReview" value="3" id="filmReview_3" <?php echo ($filmReview == 3) ? 'checked="checked"' : ''; ?>></label>
-  	    <label>4<input type="radio" name="filmReview" value="4" id="filmReview_4" <?php echo ($filmReview == 4) ? 'checked="checked"' : ''; ?>></label>
-        <label>5<input type="radio" name="filmReview" value="5" id="filmReview_5" <?php echo ($filmReview == 5) ? 'checked="checked"' : ''; ?>></label>
+  	    <label>0<input type="radio" name="userRating" value="0"></label>
+  	    <label>1<input type="radio" name="userRating" value="1"></label>
+  	    <label>2<input type="radio" name="userRating" value="2"></label>
+  	    <label>3<input type="radio" name="userRating" value="3"></label>
+  	    <label>4<input type="radio" name="userRating" value="4"></label>
+        <label>5<input type="radio" name="userRating" value="5"></label>
     </p>
     </form>
     
 <?php
-	echo "<h2>&pound;{$filmPrice}</h2>";
-	echo "<p>{$filmDescription}</p>";
+	echo "<h2>&pound;{$row->filmPrice}</h2>";
+	echo "<p>{$row->filmDescription}</p>";
 
 ?>
 </div>
-<div class="rightBox">
+<div>
 <?php
-	echo "<img src=\"images/{$filmImage}\" alt=\"{$filmName}\" class=\"rightImg\">"
+	echo "<img src=\"images/{$row->filmImage}\" alt=\"{$row->filmName}\" class=\"rightImg\">"
 ?>
 </div>
 
 </section>
 <section>
-<div class="leftBox">
+<div>
 <h3>You might also like:</h3>
 <ul class="suggestions">
 </ul>
 </div>
-<div class="rightBox">
+<div>
 <h3>Nearest cinema:</h3>
 <div id="myMap">
 
@@ -78,11 +80,10 @@ $userRatingAvg = round($ratingAr['Score']/$ratingAr['Reviews'], 2);
 </section>
 
 <footer>
-<p>&copy; 2015</p>
+<p>&copy; 2016</p>
 </footer>
 
 </div>
-<script src="scripts/jquery-1.11.3.min.js"></script>
-
+<script src="scripts/jquery-3.1.1.min.js"></script>
 </body>
 </html>

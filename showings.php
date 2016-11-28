@@ -6,8 +6,10 @@ $today = date('Ymd');
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=1.0,initial-scale=1">
 <title>Sheffield Cineworld Listing</title>
-<link href="css/main.css" rel="stylesheet" type="text/css">
+<link href="css/mobileFirst.css" rel="stylesheet" type="text/css">
+<link href="css/desktop.css" media="only screen and (min-width:601px)" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="container">
@@ -22,34 +24,27 @@ $today = date('Ymd');
 </nav>
 </header>
 
-<section>
-<div class="leftBox">
-	
-    <div id="filmList">
-    </div>
-   
-</div>
-<div class="rightBox">
-
-</div>
-
+<section id="filmTimings">
 </section>
+   
+
+
 
 <footer>
-<p>&copy; 2015</p>
+<p>&copy; 2016</p>
 </footer>
 
 </div>
-<script src="scripts/jquery-1.11.3.min.js"></script>
+<script src="scripts/jquery-3.1.1.min.js"></script>
 <script>
 // list all cineworld cinemas
 // https://www2.cineworld.co.uk/developer/api/films
 // http://www2.cineworld.co.uk/api/quickbook/cinemas?key=@qD9NqMc
 // http://www.cineworld.com/api/quickbook/performances?key=key&cinema=23&film=54321&date=20100801
  $.ajax({
-			url: 'http://www2.cineworld.co.uk/api/quickbook/performances',
+			url: 'http://www.cineworld.co.uk/api/quickbook/performances',
             type: 'GET',
-            data: {key: '<YOURKEY>', cinema: <CINEMA_NUMBER>, film: <?php echo $edi;?>, date:<?php echo $today;?>},
+            data: {key: '@qD9NqMc', cinema: 54, film: <?php echo $edi;?>, date:<?php echo $today;?>},
             dataType: 'jsonp', // Setting this data type will add the callback parameter for you
             success: parseFilms
         });
@@ -60,7 +55,7 @@ function parseFilms(response, status) {
     // Check for errors from the server
     if (response.errors) {
         $.each(response.errors, function() {
-            html += '<li>' + this + '</li>';
+            html += '<p>' + this + '</p>';
         });
     } else {
        if(response.performances.length > 0){
@@ -74,7 +69,7 @@ function parseFilms(response, status) {
     }
 
     // Faster than doing a DOM call to append each node
-    $('#filmList').append(html);
+    $('#filmTimings').append(html);
 }
 </script>
 </body>
