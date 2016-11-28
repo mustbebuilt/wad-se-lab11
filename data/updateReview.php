@@ -1,27 +1,25 @@
 <?php 
 header('Content-Type: application/json');
-require('../../../includes/conn.inc.php'); 
-$filmID =  filter_var($_POST['filmID'], FILTER_VALIDATE_INT);
-$filmReview =  filter_var($_POST['filmReview'], FILTER_VALIDATE_INT);
-$stmt = $mysqli->prepare("SELECT userRating FROM movies WHERE filmID = ?");
-$stmt->bind_param('i', $filmID);
-$stmt->execute(); 
-$stmt->bind_result($userRating);
-$stmt->fetch();
-$stmt->close();
+require('../includes/conn.inc.php');
+require('../includes/functions.inc.php');
+$sFilmID = safeInt($_POST['filmID']);
+$sUserRating = safeInt($_POST['userRating']);
+$stmt = $pdo->prepare("SELECT userRating FROM movies WHERE filmID = :filmID");
+$stmt->bindParam(':filmID', $sFilmID, PDO::PARAM_INT);
+$stmt->execute();
+$row = $stmt->fetchObject();
 //{"Reviews":"0","Score":"0"}
-if(is_null($userRating)){
-	$newRating = array('Reviews'=>1, 'Score'=>$filmReview);
+if(is_null($row->userRating)){
+	$newRating = array('Reviews'=>1, 'Score'=>$sUserRating);
 }else{
-	$newRating= json_decode($userRating, true);
+	$newRating= json_decode($row->userRating, true);
 	$newRating['Reviews']++;
-	$newRating['Score']+=$filmReview;
+	$newRating['Score']+=$sUserRating;
 }
-
 $backToJson = json_encode($newRating);
-$stmt = $mysqli->prepare("UPDATE movies SET userRating = ? WHERE filmID = ?");
-$stmt->bind_param('si', $backToJson, $filmID);
+$stmt = $pdo->prepare("UPDATE movies SET userRating = :userRating WHERE filmID = :filmID");
+$stmt->bindParam(':filmID', $sFilmID, PDO::PARAM_INT);
+$stmt->bindParam(':userRating', $backToJson, PDO::PARAM_STR);
 $stmt->execute(); 
-$stmt->close();
 // add the echo to return the JSON
 ?>
