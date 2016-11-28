@@ -1,0 +1,75 @@
+/* CSS Document */
+#container{
+	width:100%;
+}
+main{
+	display:flex;
+	flex-wrap: wrap;
+}
+section{
+	display:flex;
+	align-items: flex-start;
+}
+section>div{
+	width:40%;
+	margin:10px auto;	
+}
+section#filmList{
+	flex-wrap: wrap;	
+}
+section#filmTimings{
+	display:block;
+	width:50%;
+	margin:auto;	
+}
+section>div.imgGrid{
+	width:250px;
+	padding:5px;
+	margin:10px auto;	
+}
+.imgGrid .filmName{
+	height:50px;	
+}
+.imgGrid .filmName a{
+	text-decoration:none;
+	color:#000;	
+}
+.imgGrid .filmName a:hover{
+	text-decoration:underline;
+	color:#8FC2FF;	
+}
+section#filmList img{
+	width:	100%;
+}
+.filmName{
+	text-transform:uppercase;
+	background:none;
+	padding:5px;
+}
+.grid{
+	width:300px;
+	padding:5px;
+	border-radius:6px;
+	border:1px solid #8FC2FF;
+	/*background-color:#8FC2FF;*/
+}
+.fullDetails{
+	display:none;
+	position:absolute;
+	z-index:1;
+	background:rgba(0,0,0,0.8);
+	color:#fff;
+	padding:10px;
+	width:280px;
+	margin-right:10px;
+	border-radius:8px;
+}
+footer{
+	border-top:1px solid #ccc;
+	margin:40px auto;
+	padding-top:20px;
+	font-size:60%;
+	width:50%;
+	text-align:center;	
+}
+
